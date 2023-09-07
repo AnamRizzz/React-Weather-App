@@ -11,16 +11,16 @@ function WeatherForecast({ city, country, unit, apiKey }) {
         const response = await fetch(
           `https://api.openweathermap.org/data/2.5/forecast?q=${city},${country}&appid=${apiKey}&units=${unit}`
         );
-
-        if (!response.ok) {
-          throw new Error("Forecast data not found.");
+        if (response.ok) {
+          const data = await response.json();
+          setForecastData(data);
+        } else {
+          console.error("Error fetching forecast data:", response.status);
         }
-
-        const data = await response.json();
-        setForecastData(data);
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching forecast data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -28,25 +28,34 @@ function WeatherForecast({ city, country, unit, apiKey }) {
   }, [city, country, unit, apiKey]);
 
   const renderForecast = () => {
-    if (loading || !forecastData || !forecastData.list) {
+    if (loading) {
       return <Spinner animation="border" role="status" variant="info" />;
     }
 
-    const sevenDayForecast = forecastData.list.slice(0, 7);
+    if (!forecastData || forecastData.cod !== "200") {
+      return <div>Unable to fetch forecast data.</div>;
+    }
+
+    const dailyForecasts = forecastData.list.filter((item, index) => {
+      const date = new Date(item.dt * 1000);
+      return index % 8 === 0; // One forecast per day
+    });
 
     return (
-      <div className="d-flex align-items-center">
-        {sevenDayForecast.map((forecast, index) => (
-          <div className="forecast-item mx-2" key={index}>
+      <div className="forecast">
+        {dailyForecasts.map((item, index) => (
+          <div className="forecast-item" key={index}>
+            <div className="forecast-date">
+              {new Date(item.dt * 1000).toLocaleDateString()}
+            </div>
             <div className="forecast-icon">
               <img
-                src={`http://openweathermap.org/img/wn/${forecast.weather[0].icon}.png`}
-                alt={forecast.weather[0].description}
-                className="rotate"
+                src={`https://openweathermap.org/img/wn/${item.weather[0].icon}.png`}
+                alt={item.weather[0].description}
               />
             </div>
             <div className="forecast-temperature">
-              {Math.round(forecast.main.temp)}°C
+              {Math.round(item.main.temp)}°{unit === "metric" ? "C" : "F"}
             </div>
           </div>
         ))}
@@ -64,10 +73,25 @@ function WeatherForecast({ city, country, unit, apiKey }) {
         )}
       </Card.Header>
       <Card.Body>{renderForecast()}</Card.Body>
+      <Card.Footer>
+        <p>
+          Open Sourced by
+        <a
+          href="https://github.com/AnamRizzz/React-Weather-App.git"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+         <br/> Anam Fatima 
+        </a>
+        <br/>
+         on Github
+        </p>
+      </Card.Footer>
     </Card>
   );
 }
 
 export default WeatherForecast;
+
 
 
