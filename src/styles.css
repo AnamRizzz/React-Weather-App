@@ -1,0 +1,64 @@
+/* App.css */
+
+/* Center align content vertically */
+.App {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Style the container for WeatherSearch */
+.container {
+  max-width: 400px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Style the WeatherHeader Navbar */
+.navbar {
+  background-color: #343a40 !important;
+}
+
+.navbar-dark .navbar-brand {
+  font-weight: bold;
+}
+
+/* Style the search input and button */
+.form-control {
+  margin-bottom: 10px;
+}
+
+.btn-primary {
+  width: 100%;
+}
+
+/* Style the WeatherDisplay component */
+.weather-display {
+  text-align: center;
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.weather-animation {
+  margin: 20px auto;
+}
+
+/* Style the toggle unit button */
+.btn-primary.toggle-unit {
+  margin-top: 10px;
+}
+
+/* Style error message */
+.text-danger {
+  margin-top: 10px;
+  text-align: center;
+}
