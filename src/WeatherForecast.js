@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Card } from "react-bootstrap";
+import { Card, Spinner } from "react-bootstrap";
 
 function WeatherForecast({ city, country, unit, apiKey }) {
-  // State for forecast data
   const [forecastData, setForecastData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchForecastData = async () => {
@@ -18,6 +18,7 @@ function WeatherForecast({ city, country, unit, apiKey }) {
 
         const data = await response.json();
         setForecastData(data);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching forecast data:", error);
       }
@@ -26,34 +27,43 @@ function WeatherForecast({ city, country, unit, apiKey }) {
     fetchForecastData();
   }, [city, country, unit, apiKey]);
 
-  // Helper function to get the date from the forecast data
-  const getDateFromForecast = (forecast) => {
-    const date = new Date(forecast.dt * 1000);
-    return date.toLocaleDateString();
+  const renderForecast = () => {
+    if (loading || !forecastData || !forecastData.list) {
+      return <Spinner animation="border" role="status" variant="info" />;
+    }
+
+    const sevenDayForecast = forecastData.list.slice(0, 7);
+
+    return (
+      <div className="d-flex align-items-center">
+        {sevenDayForecast.map((forecast, index) => (
+          <div className="forecast-item mx-2" key={index}>
+            <div className="forecast-icon">
+              <img
+                src={`http://openweathermap.org/img/wn/${forecast.weather[0].icon}.png`}
+                alt={forecast.weather[0].description}
+                className="rotate"
+              />
+            </div>
+            <div className="forecast-temperature">
+              {Math.round(forecast.main.temp)}°C
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   };
 
   return (
     <Card className="text-center mt-4">
       <Card.Header>
-        7-Day Weather Forecast for {city}, {country}
-      </Card.Header>
-      <Card.Body>
-        {forecastData && forecastData.list && (
-          <div className="forecast-container">
-            {forecastData.list.slice(0, 7).map((forecast, index) => (
-              <div className="forecast-item" key={index}>
-                <div className="forecast-date">{getDateFromForecast(forecast)}</div>
-                <div className="forecast-temperature">
-                  {Math.round(forecast.main.temp)}°C
-                </div>
-                <div className="forecast-description">
-                  {forecast.weather[0].description}
-                </div>
-              </div>
-            ))}
-          </div>
+        {loading ? (
+          <Spinner animation="border" role="status" variant="info" />
+        ) : (
+          `7-Day Weather Forecast for ${city}, ${country}`
         )}
-      </Card.Body>
+      </Card.Header>
+      <Card.Body>{renderForecast()}</Card.Body>
     </Card>
   );
 }

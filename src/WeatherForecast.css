@@ -1,34 +1,13 @@
-/* Add your CSS styles here for WeatherForecast component */
-.weather-forecast {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 20px;
+/* WeatherForecast.css */
+.rotate {
+  animation: rotate 2s infinite linear;
 }
 
-.weather-forecast-item {
-  text-align: center;
-  border: 1px solid #ccc;
-  padding: 15px;
-  border-radius: 5px;
-  min-width: 120px;
-}
-
-.forecast-date {
-  font-weight: bold;
-}
-
-.forecast-icon img {
-  max-width: 50px;
-  height: auto;
-}
-
-.forecast-temperature {
-  margin-top: 10px;
-  font-size: 1.25rem;
-  font-weight: bold;
-}
-
-.forecast-description {
-  margin-top: 5px;
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
